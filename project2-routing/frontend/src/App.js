@@ -27,35 +27,73 @@
 
 
 // 4. Add properly working links to the MainNavigation
+
+//done
+
+
 // 5. Ensure that the links in MainNavigation receive an "active" class when active
+
+//done 
+
+
 // 6. Output a list of dummy events to the EventsPage
 //    Every list item should include a link to the respective EventDetailPage
+
+//done
+
+
 // 7. Output the ID of the selected event on the EventDetailPage
 // BONUS: Add another (nested) layout route that adds the <EventNavigation> component above all /events... page components
+
+//done
+
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+
 import HomePage from './pages/Home';
-import EventPage from './pages/Event';
+import EventPage, { loader as eventsLoader } from './pages/Event';
 import EditEvintPage from './pages/EditEventpage';
 import NewEvnetPage from './pages/NewEventPage';
 import RootLayout from './pages/Root';
+import EventDetailPage, { loader as eventDetailLoader } from './pages/EventDetail';
+import EventsRootLayout from './pages/EventsRoot';
+import ErrorPage from './pages/Error';
 
 
 
 const router = createBrowserRouter([
   {
-    path: '/', element: <RootLayout />,
+    path: '/',
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'events', element: <EventPage /> },
-      { path: 'events/eventId', element: <EditEvintPage /> },
-      { path: 'evnets/new', element: <NewEvnetPage /> },
-      { path: 'events/:eventId/edit', element: <EditEvintPage /> },
-    ]
-  }
+      {
+        path: 'events',
+        element: <EventsRootLayout />,
+        children: [
+          {
+            index: true,
+            element: <EventPage />,
+            loader: eventsLoader,
+          },
+          {
+            path: 'eventId',
+            children: [
+              {
+                index: true,
+                element: <EventDetailPage />,
+                loader: eventDetailLoader,
+              },
 
-
+            ]
+          },
+          { path: 'new', element: <NewEvnetPage /> },
+          { path: ':eventId/edit', element: <EditEvintPage /> },
+        ],
+      },
+    ],
+  },
 ]);
-
 
 function App() {
   return <RouterProvider router={router} />;
